@@ -4,98 +4,58 @@ export class PdfGenerator {
         this.pdf = null;
     }
     
-    async generatePdf() {
-        try {
-            // Get report container
-            const reportContainer = document.getElementById('report-preview');
-            
-            if (!reportContainer) {
-                alert('Erro: Container do relatório não encontrado.');
-                return;
-            }
-            
-            // Show loading indicator
-            this.showLoading();
-            
-            // Create a temporary container for PDF generation to ensure proper styling
-            const tempContainer = document.createElement('div');
-            tempContainer.innerHTML = reportContainer.innerHTML;
-            tempContainer.style.position = 'absolute';
-            tempContainer.style.left = '-9999px';
-            tempContainer.style.width = '790px'; // A4 width in pixels at 96 DPI
-            document.body.appendChild(tempContainer);
-            
-            // Initialize jsPDF
-            const { jsPDF } = window.jspdf;
-            this.pdf = new jsPDF({
+    generatePDF() {
+        this.showLoading();
+        
+        const reportElement = document.getElementById('report-preview');
+        
+        // Configurar opções para html2canvas
+        const options = {
+            scale: 2, // Aumentar a escala para melhor qualidade
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff'
+        };
+        
+        // Capturar o relatório como uma imagem
+        html2canvas(reportElement, options).then(canvas => {
+            // Criar um novo documento PDF
+            const pdf = new jspdf.jsPDF({
                 orientation: 'portrait',
                 unit: 'mm',
                 format: 'a4'
             });
             
-            // Use html2canvas to render the report
-            const canvas = await html2canvas(tempContainer, {
-                scale: 2, // Higher scale for better quality
-                useCORS: true,
-                logging: false,
-                windowWidth: 790
-            });
+            // Obter as dimensões do canvas e do PDF
+            const imgData = canvas.toDataURL('image/png');
+            const imgWidth = 210; // A4 width in mm
+            const pageHeight = 297; // A4 height in mm
+            const imgHeight = canvas.height * imgWidth / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
             
-            // Remove temporary container
-            document.body.removeChild(tempContainer);
+            // Adicionar a primeira página
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
             
-            // Add the canvas image to the PDF
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
-            const pdfWidth = this.pdf.internal.pageSize.getWidth();
-            const pdfHeight = this.pdf.internal.pageSize.getHeight();
-            const imgWidth = canvas.width;
-            const imgHeight = canvas.height;
-            const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-            const imgX = (pdfWidth - imgWidth * ratio) / 2;
-            const imgY = 0;
-            
-            this.pdf.addImage(imgData, 'JPEG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
-            
-            // If the report is longer than one page, create additional pages
-            if (imgHeight * ratio > pdfHeight) {
-                let remainingHeight = imgHeight * ratio;
-                let currentPage = 1;
-                
-                while (remainingHeight > pdfHeight) {
-                    remainingHeight -= pdfHeight;
-                    currentPage++;
-                    this.pdf.addPage();
-                    
-                    // Draw the next part of the image on the new page
-                    this.pdf.addImage(
-                        imgData, 
-                        'JPEG', 
-                        imgX, 
-                        -(pdfHeight * (currentPage - 1)), 
-                        imgWidth * ratio, 
-                        imgHeight * ratio
-                    );
-                }
+            // Adicionar páginas adicionais se necessário
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
             }
             
-            // Get filename from laudo number or default
-            const laudoNumero = document.getElementById('laudo-numero').value || 'laudo-spt';
-            const fileName = `${laudoNumero.replace(/\//g, '-')}.pdf`;
+            // Salvar o PDF
+            pdf.save('laudo-spt.pdf');
             
-            // Save the PDF
-            this.pdf.save(fileName);
-            
-            // Hide loading indicator
+            // Esconder o indicador de carregamento
             this.hideLoading();
-            
-            // Show success message
-            alert('PDF gerado com sucesso!');
-            
-        } catch (error) {
+        }).catch(error => {
             console.error('Erro ao gerar PDF:', error);
-            alert('Erro ao gerar PDF. Verifique o console para mais detalhes.');
             this.hideLoading();
-        }
+            alert('Ocorreu um erro ao gerar o PDF. Por favor, tente novamente.');
+        });
     }
     
     showLoading() {

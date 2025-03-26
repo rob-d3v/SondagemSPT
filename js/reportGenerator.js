@@ -53,139 +53,172 @@ export class ReportGenerator {
     }
     
     generateReportHtml(formData, soilLayers, sptData) {
-        // Generate main soil layer description
-        let soilLayersHtml = '';
-        soilLayers.forEach(layer => {
-            soilLayersHtml += `
-                <div class="soil-layer-description">
-                    <div class="layer-depth">
-                        <span>${layer.startDepth.toFixed(2)}</span>
-                        <span class="depth-separator">-</span>
-                        <span>${layer.endDepth.toFixed(2)}</span>
-                    </div>
-                    <div class="layer-text">${layer.description}</div>
-                </div>
-            `;
-        });
-        
-        // Generate SPT data table rows
-        let sptTableRows = '';
-        sptData.forEach((data, index) => {
-            sptTableRows += `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${data.cota.toFixed(2)}</td>
-                    <td>${data.amostra}</td>
-                    <td>${data.golpesInicial}</td>
-                    <td>${data.golpesFinal}</td>
-                    <td>${data.hasWaterLevel ? 'Sim' : 'Não'}</td>
-                </tr>
-            `;
-        });
-        
-        // Format the date
-        const dateObj = formData.data ? new Date(formData.data) : new Date();
-        const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
-        
-        // Generate the complete report HTML
+        // Criar o HTML do relatório com layout melhorado
         return `
             <div class="spt-report">
-                <div class="spt-report-header">
-                    <h1>PERFIL GEOTÉCNICO</h1>
+                <div class="report-header">
+                    <div class="company-info">
+                        <h2>${formData.companyName || 'ROBSON COSTA'}</h2>
+                        <p>${formData.companyLocation || 'RIO VERDE GO'}</p>
+                        <p>TEL: ${formData.companyPhone || '(64) 98406-9090'}</p>
+                    </div>
                     <div class="report-info">
-                        <div class="report-info-row">
-                            <span class="report-label">LAUDO Nº:</span>
-                            <span class="report-value">${formData.laudoNumero}</span>
-                            <span class="report-label">SONDAGEM DE SIMPLES RECONHECIMENTO</span>
-                            <span class="report-label">SPT:</span>
-                            <span class="report-value">${formData.sptNumero}</span>
-                        </div>
-                        <div class="report-info-row">
-                            <span class="report-label">OBRA:</span>
-                            <span class="report-value">${formData.obra}</span>
-                            <span class="report-label">COTA:</span>
-                            <span class="report-value">${formData.cota}</span>
-                            <span class="report-label">REL. Nº:</span>
-                            <span class="report-value">${formData.relNumero}</span>
-                        </div>
-                        <div class="report-info-row">
-                            <span class="report-label">LOCAL:</span>
-                            <span class="report-value">${formData.local}</span>
-                            <span class="report-label">FL.Nº:</span>
-                            <span class="report-value">${formData.flNumero}</span>
-                        </div>
-                        <div class="report-info-row">
-                            <span class="report-label">CLIENTE:</span>
-                            <span class="report-value">${formData.cliente}</span>
-                        </div>
-                        <div class="report-info-row">
-                            <span class="report-label">DES.:</span>
-                            <span class="report-value">${formData.desenhista}</span>
-                            <span class="report-label">SOND.:</span>
-                            <span class="report-value">${formData.sondador}</span>
-                            <span class="report-label">ESC.:</span>
-                            <span class="report-value">${formData.escala}</span>
-                            <span class="report-label">DATA:</span>
-                            <span class="report-value">${formattedDate}</span>
-                        </div>
+                        <table class="info-table">
+                            <tr>
+                                <td>LAUDO Nº:</td>
+                                <td>${formData.reportNumber || ''}</td>
+                                <td>SONDAGEM DE SIMPLES RECONHECIMENTO</td>
+                                <td>SPT:</td>
+                                <td>${formData.sptNumber || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>OBRA:</td>
+                                <td>${formData.projectName || ''}</td>
+                                <td>COTA:</td>
+                                <td>${formData.elevation || ''}</td>
+                                <td>REL. Nº ${formData.relNumber || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>LOCAL:</td>
+                                <td colspan="3">${formData.location || ''}</td>
+                                <td>FL. Nº ${formData.pageNumber || '01/01'}</td>
+                            </tr>
+                            <tr>
+                                <td>CLIENTE:</td>
+                                <td colspan="4">${formData.clientName || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>DES.:</td>
+                                <td>${formData.designer || ''}</td>
+                                <td>SOND.:</td>
+                                <td>${formData.surveyor || ''}</td>
+                                <td>DATA: ${formData.date || ''}</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
                 
-                <div class="spt-report-content">
-                    <div class="spt-report-left">
-                        <div class="soil-layers-container">
-                            <h3>CAMADAS DETECTADAS</h3>
-                            ${soilLayersHtml}
-                        </div>
-                        
-                        <div class="water-level-info">
-                            <p>N.A. ${formData.nivelAgua}m</p>
-                        </div>
-                        
-                        <div class="observations">
-                            <h3>Observação:</h3>
-                            <p>- Profundidade atingida: ${formData.profundidadeFinal}m</p>
-                            <p>- Limite de sondagem ao S.P.T.</p>
-                            <p>- Água com ${formData.nivelAgua}m de profundidade.</p>
-                            <p>${formData.observacoes}</p>
-                        </div>
-                    </div>
+                <div class="report-content">
+                    <h3 class="section-title">PERFIL GEOTÉCNICO</h3>
                     
-                    <div class="spt-report-right">
-                        <div class="spt-data-container">
-                            <h3>CAMADAS DETECTADAS</h3>
-                            <table class="spt-data-table">
+                    <div class="report-body">
+                        <div class="soil-layers-section">
+                            <table class="soil-layers-table">
                                 <thead>
                                     <tr>
-                                        <th>AMOSTRA</th>
-                                        <th>COTA</th>
-                                        <th>REF.</th>
-                                        <th>INICIAL</th>
-                                        <th>FINAL</th>
-                                        <th>N.A.</th>
+                                        <th class="profund-col">PROFUND. (m)</th>
+                                        <th class="na-col">N.A.</th>
+                                        <th class="class-col">CLASSIFICAÇÃO</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${sptTableRows}
+                                    ${this.generateSoilLayersHtml(soilLayers)}
                                 </tbody>
                             </table>
                         </div>
                         
-                        <div id="spt-chart-container" class="spt-chart-container">
-                            <!-- Chart will be inserted here by JavaScript -->
+                        <div class="spt-data-section">
+                            <div class="spt-table-container">
+                                <table class="spt-data-table">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="2">ESCALA DAS COTAS</th>
+                                            <th rowspan="2">AMOSTRA Nº</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${this.generateSptDataHtml(sptData)}
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="spt-chart-section">
+                                <h4>CAMADAS DETECTADAS</h4>
+                                <div class="spt-chart-header">
+                                    <div class="golpes-header">GOLPES P/30cm</div>
+                                    <div class="chart-labels">
+                                        <div class="inicial-label">(INICIAL)</div>
+                                        <div class="final-label">(FINAL)</div>
+                                    </div>
+                                </div>
+                                <div id="spt-chart-container" class="spt-chart-container">
+                                    <!-- O gráfico será gerado pelo JavaScript -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="spt-footer">
-                    <div class="engineer-info">
-                        <p>${formData.engenheiro}</p>
-                        <p>Engenheiro Civil</p>
-                        <p>Crea: ${formData.crea}</p>
-                    </div>
+                <div class="observations-section">
+                    <h4>Observação:</h4>
+                    <ul>
+                        <li>Limite de sondagem ao S.P.T.</li>
+                        <li>Profundidade atingida: ${this.getMaxDepth(sptData)}m</li>
+                        ${this.waterLevelHtml(sptData)}
+                    </ul>
                 </div>
             </div>
         `;
+    }
+    
+    generateSoilLayersHtml(soilLayers) {
+        if (!soilLayers || soilLayers.length === 0) {
+            return '<tr><td colspan="3">Nenhuma camada definida</td></tr>';
+        }
+        
+        let html = '';
+        
+        soilLayers.forEach(layer => {
+            html += `
+                <tr>
+                    <td class="depth-cell">${layer.startDepth.toFixed(2)}</td>
+                    <td></td>
+                    <td class="description-cell">${layer.description}</td>
+                </tr>
+            `;
+        });
+        
+        return html;
+    }
+    
+    generateSptDataHtml(sptData) {
+        if (!sptData || sptData.length === 0) {
+            return '<tr><td colspan="3">Nenhum dado SPT disponível</td></tr>';
+        }
+        
+        let html = '';
+        
+        sptData.forEach(data => {
+            html += `
+                <tr>
+                    <td>${data.depth.toFixed(2)}</td>
+                    <td class="cota-cell">${data.cota.toFixed(2)}</td>
+                    <td class="amostra-cell">${data.amostra}</td>
+                    <td class="golpes-cell">${data.golpesInicial}</td>
+                    <td class="golpes-cell">${data.golpesFinal}</td>
+                </tr>
+            `;
+        });
+        
+        return html;
+    }
+    
+    getMaxDepth(sptData) {
+        if (!sptData || sptData.length === 0) {
+            return 0;
+        }
+        
+        return Math.max(...sptData.map(data => data.depth));
+    }
+    
+    waterLevelHtml(sptData) {
+        const waterLevelRow = sptData.find(data => data.hasWaterLevel);
+        
+        if (waterLevelRow) {
+            return `<li>Água com ${waterLevelRow.depth.toFixed(2)}m de profundidade</li>`;
+        }
+        
+        return '<li>Não foi encontrado nível d\'água</li>';
     }
     
     // Method for generating a simplified HTML version suitable for PDF export
