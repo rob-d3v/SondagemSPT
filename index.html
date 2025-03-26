@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Laudos SPT</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Gerador de Laudos de Sondagem SPT</h1>
+        </header>
+
+        <div class="main-content">
+            <div class="tabs">
+                <button class="tab-button active" data-tab="general-info">Informações Gerais</button>
+                <button class="tab-button" data-tab="soil-layers">Camadas do Solo</button>
+                <button class="tab-button" data-tab="spt-data">Dados SPT</button>
+                <button class="tab-button" data-tab="observations">Observações</button>
+                <button class="tab-button" data-tab="preview">Visualizar Laudo</button>
+            </div>
+
+            <div class="tab-content">
+                <!-- Informações Gerais -->
+                <div class="tab-pane active" id="general-info">
+                    <h2>Informações Gerais</h2>
+                    <div class="form-group">
+                        <label for="laudo-numero">Laudo Nº:</label>
+                        <input type="text" id="laudo-numero" name="laudo-numero">
+                    </div>
+                    <div class="form-group">
+                        <label for="obra">Obra:</label>
+                        <input type="text" id="obra" name="obra">
+                    </div>
+                    <div class="form-group">
+                        <label for="cliente">Cliente:</label>
+                        <input type="text" id="cliente" name="cliente">
+                    </div>
+                    <div class="form-group">
+                        <label for="local">Local:</label>
+                        <input type="text" id="local" name="local">
+                    </div>
+                    <div class="form-group">
+                        <label for="data">Data:</label>
+                        <input type="date" id="data" name="data">
+                    </div>
+                    <div class="form-group">
+                        <label for="sondador">Sondador:</label>
+                        <input type="text" id="sondador" name="sondador">
+                    </div>
+                    <div class="form-group">
+                        <label for="desenhista">Desenhista:</label>
+                        <input type="text" id="desenhista" name="desenhista">
+                    </div>
+                    <div class="form-group">
+                        <label for="escala">Escala:</label>
+                        <input type="text" id="escala" name="escala" value="1:100">
+                    </div>
+                    <div class="form-group">
+                        <label for="cota">Cota:</label>
+                        <input type="text" id="cota" name="cota">
+                    </div>
+                    <div class="form-group">
+                        <label for="rel-numero">Rel. Nº:</label>
+                        <input type="text" id="rel-numero" name="rel-numero">
+                    </div>
+                    <div class="form-group">
+                        <label for="spt-numero">SPT:</label>
+                        <input type="text" id="spt-numero" name="spt-numero">
+                    </div>
+                    <div class="form-group">
+                        <label for="fl-numero">FL. Nº:</label>
+                        <input type="text" id="fl-numero" name="fl-numero">
+                    </div>
+                    <div class="form-group">
+                        <label for="engenheiro">Engenheiro:</label>
+                        <input type="text" id="engenheiro" name="engenheiro">
+                    </div>
+                    <div class="form-group">
+                        <label for="crea">CREA:</label>
+                        <input type="text" id="crea" name="crea">
+                    </div>
+                    <div class="form-group">
+                        <label for="nivel-agua">Nível d'água (m):</label>
+                        <input type="number" id="nivel-agua" name="nivel-agua" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="profundidade-final">Profundidade final (m):</label>
+                        <input type="number" id="profundidade-final" name="profundidade-final" step="0.01">
+                    </div>
+                </div>
+
+                <!-- Camadas do Solo -->
+                <div class="tab-pane" id="soil-layers">
+                    <h2>Camadas do Solo</h2>
+                    <div id="soil-layers-container">
+                        <div class="soil-layer">
+                            <div class="form-group">
+                                <label>Profundidade inicial (m):</label>
+                                <input type="number" class="layer-depth-start" step="0.01" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Profundidade final (m):</label>
+                                <input type="number" class="layer-depth-end" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>Descrição da camada:</label>
+                                <textarea class="layer-description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="add-layer" class="btn">Adicionar Camada</button>
+                </div>
+
+                <!-- Dados SPT -->
+                <div class="tab-pane" id="spt-data">
+                    <h2>Dados de Sondagem SPT</h2>
+                    <table id="spt-table">
+                        <thead>
+                            <tr>
+                                <th>Profundidade (m)</th>
+                                <th>Cota</th>
+                                <th>Amostra</th>
+                                <th>Golpes Inicial</th>
+                                <th>Golpes Final</th>
+                            </tr>
+                        </thead>
+                        <tbody id="spt-table-body">
+                            <!-- Linha padrão a 1m de profundidade -->
+                        </tbody>
+                    </table>
+                    <button id="generate-depths" class="btn">Gerar Profundidades</button>
+                </div>
+
+                <!-- Observações -->
+                <div class="tab-pane" id="observations">
+                    <h2>Observações</h2>
+                    <div class="form-group">
+                        <label for="observacoes">Observações adicionais:</label>
+                        <textarea id="observacoes" name="observacoes" rows="6"></textarea>
+                    </div>
+                </div>
+
+                <!-- Visualizar Laudo -->
+                <div class="tab-pane" id="preview">
+                    <h2>Visualização do Laudo</h2>
+                    <div class="preview-container">
+                        <div id="report-preview">
+                            <!-- O preview será gerado pelo JavaScript -->
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button id="generate-pdf" class="btn primary">Gerar PDF</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+    <!-- Scripts da aplicação em ordem de dependência -->
+    <script type="module" src="js/utils.js"></script>
+    <script type="module" src="js/tabManager.js"></script>
+    <script type="module" src="js/soilLayerManager.js"></script>
+    <script type="module" src="js/sptDataManager.js"></script>
+    <script type="module" src="js/chartManager.js"></script>
+    <script type="module" src="js/dataStorage.js"></script>
+    <script type="module" src="js/reportGenerator.js"></script>
+    <script type="module" src="js/pdfGenerator.js"></script>
+    <script type="module" src="js/templateManager.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+
+</html>

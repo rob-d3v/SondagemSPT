@@ -1,0 +1,35 @@
+graph TD
+    A[index.html] --> B[styles.css]
+    A --> C[js/]
+    C --> D[app.js]
+    C --> E[tabManager.js]
+    C --> F[soilLayerManager.js]
+    C --> G[sptDataManager.js]
+    C --> H[chartManager.js]
+    C --> I[reportGenerator.js]
+    C --> J[pdfGenerator.js]
+    C --> K[dataStorage.js]
+    C --> L[templateManager.js]
+    C --> M[utils.js]
+    
+    D --> E
+    D --> F
+    D --> G
+    D --> H
+    D --> I
+    D --> J
+    D --> K
+    D --> L
+    D --> M
+    
+    L --> K
+    L --> M
+    
+    I --> F
+    I --> G
+    I --> H
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#333,stroke-width:1px
+    style C fill:#fcc,stroke:#333,stroke-width:2px
+    style D fill:#cfc,stroke:#333,stroke-width:1px
