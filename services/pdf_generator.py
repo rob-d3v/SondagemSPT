@@ -83,16 +83,17 @@ def draw_content(c, width, height, form_data, soil_layers, spt_data):
     
     # Draw column headers
     c.setFont("Helvetica-Bold", 8)
-    c.drawString(x_start + col1_width/2 - 15*mm, y_content_start + 5*mm, "CAMADAS DETECTADAS")
-    c.drawString(x_start + col1_width + col2_width/2 - 15*mm, y_content_start + 5*mm, "ESCALA DAS COTAS")
+    c.drawCentredString(x_start + col1_width/2, y_content_start + 5*mm, "CAMADAS DETECTADAS")
+    c.drawCentredString(x_start + col1_width + col2_width/2, y_content_start + 5*mm, "ESCALA DAS COTAS")
     
     # Draw vertical text for "AMOSTRA REVESTIDA"
     c.saveState()
     c.rotate(90)
-    c.drawString(y_content_start - content_height/2, -(x_start + col1_width + col2_width + 2*mm), "AMOSTRA REVESTIDA")
+    c.drawString(y_content_start - content_height/2, -(x_start + col1_width + col2_width + col3_width/2), "AMOSTRA REVESTIDA")
     c.restoreState()
     
-    c.drawString(x_start + col1_width + col2_width + col3_width + col4_width/2 - 15*mm, y_content_start + 5*mm, "GOLPES P/30cm")
+    # Draw "CAMADAS DETECTADAS" header for the right column
+    c.drawCentredString(x_start + col1_width + col2_width + col3_width + col4_width/2, y_content_start + 5*mm, "CAMADAS DETECTADAS")
     
     # Draw column dividers
     c.line(x_start + col1_width, y_content_start, x_start + col1_width, y_content_start - content_height)
@@ -101,27 +102,66 @@ def draw_content(c, width, height, form_data, soil_layers, spt_data):
     
     # Draw subheaders
     c.setFont("Helvetica-Bold", 7)
-    c.drawString(x_start + 2*mm, y_content_start - 5*mm, "PROFUND. (m)")
-    c.drawString(x_start + col1_width/3 + 2*mm, y_content_start - 5*mm, "N.A.")
-    c.drawString(x_start + col1_width*2/3 - 5*mm, y_content_start - 5*mm, "CLASSIFICAÇÃO")
     
-    c.drawString(x_start + col1_width + 2*mm, y_content_start - 5*mm, "PROF.")
-    c.drawString(x_start + col1_width + col2_width/2 + 2*mm, y_content_start - 5*mm, "COTA")
-    
-    # Draw horizontal line below subheaders
+    # Draw subheaders for left CAMADAS DETECTADAS
+    # Draw horizontal line for subheaders
     c.line(x_start, y_content_start - 8*mm, x_start + content_width, y_content_start - 8*mm)
     
+    # Draw subcols for left CAMADAS DETECTADAS
+    subcol1_width = col1_width * 0.2  # PROFUND
+    subcol2_width = col1_width * 0.1  # N.A.
+    subcol3_width = col1_width * 0.7  # CLASSIFICAÇÃO
+    
+    c.drawCentredString(x_start + subcol1_width/2, y_content_start - 5*mm, "PROFUND. (m)")
+    c.drawCentredString(x_start + subcol1_width + subcol2_width/2, y_content_start - 5*mm, "N.A.")
+    c.drawCentredString(x_start + subcol1_width + subcol2_width + subcol3_width/2, y_content_start - 5*mm, "CLASSIFICAÇÃO")
+    
+    # Draw vertical lines for subcols in left CAMADAS DETECTADAS
+    c.line(x_start + subcol1_width, y_content_start - 8*mm, x_start + subcol1_width, y_content_start - content_height)
+    c.line(x_start + subcol1_width + subcol2_width, y_content_start - 8*mm, x_start + subcol1_width + subcol2_width, y_content_start - content_height)
+    
+    # Draw subheaders for ESCALA DAS COTAS
+    c.drawCentredString(x_start + col1_width + col2_width/2, y_content_start - 5*mm, "PROF.")
+    
+    # Draw subheaders for right CAMADAS DETECTADAS
+    # First subheader: GOLPES P/30cm
+    c.drawCentredString(x_start + col1_width + col2_width + col3_width + col4_width/2, y_content_start - 5*mm, "GOLPES P/30cm")
+    
+    # Draw horizontal line for INICIAL/FINAL subheaders
+    y_subheader2 = y_content_start - 12*mm
+    c.line(x_start + col1_width + col2_width + col3_width, y_subheader2, x_start + content_width, y_subheader2)
+    
+    # Draw INICIAL/FINAL subheaders
+    subcol4_width = col4_width * 0.5  # INICIAL
+    subcol5_width = col4_width * 0.5  # FINAL
+    
+    c.setFillColorRGB(1, 0, 0)  # Red for INICIAL
+    c.drawCentredString(x_start + col1_width + col2_width + col3_width + subcol4_width/2, y_subheader2 - 5*mm, "(INICIAL)")
+    
+    c.setFillColorRGB(0, 0, 1)  # Blue for FINAL
+    c.drawCentredString(x_start + col1_width + col2_width + col3_width + subcol4_width + subcol5_width/2, y_subheader2 - 5*mm, "(FINAL)")
+    
+    c.setFillColorRGB(0, 0, 0)  # Back to black
+    
+    # Draw vertical line between INICIAL and FINAL
+    c.line(x_start + col1_width + col2_width + col3_width + subcol4_width, y_subheader2, 
+           x_start + col1_width + col2_width + col3_width + subcol4_width, y_content_start - content_height)
+    
+    # Draw horizontal line below all subheaders
+    y_content_start_actual = y_subheader2 - 8*mm
+    c.line(x_start, y_content_start_actual, x_start + content_width, y_content_start_actual)
+    
     # Draw SPT chart grid
-    draw_spt_chart_grid(c, x_start + col1_width + col2_width + col3_width, y_content_start - 8*mm, col4_width, content_height - 8*mm)
+    draw_spt_chart_grid(c, x_start + col1_width + col2_width + col3_width, y_content_start_actual, col4_width, content_height - (y_content_start - y_content_start_actual))
     
     # Draw soil layers
-    draw_soil_layers(c, x_start, y_content_start - 8*mm, col1_width, content_height - 8*mm, soil_layers, spt_data)
+    draw_soil_layers(c, x_start, y_content_start_actual, col1_width, content_height - (y_content_start - y_content_start_actual), soil_layers, spt_data)
     
     # Draw depth scale
-    draw_depth_scale(c, x_start + col1_width, y_content_start - 8*mm, col2_width, content_height - 8*mm, soil_layers, spt_data)
+    draw_depth_scale(c, x_start + col1_width, y_content_start_actual, col2_width, content_height - (y_content_start - y_content_start_actual), soil_layers, spt_data)
     
     # Draw SPT data points and lines
-    draw_spt_data(c, x_start + col1_width + col2_width + col3_width, y_content_start - 8*mm, col4_width, content_height - 8*mm, spt_data)
+    draw_spt_data(c, x_start + col1_width + col2_width + col3_width, y_content_start_actual, col4_width, content_height - (y_content_start - y_content_start_actual), spt_data)
     
     # Draw observations
     y_obs = y_content_start - content_height - 5*mm
@@ -143,8 +183,13 @@ def draw_soil_layers(c, x, y, width, height, soil_layers, spt_data):
     c.setFont("Helvetica", 8)
     for depth in range(int(max_depth) + 1):
         y_pos = y - depth * scale
-        c.drawString(x + 5*mm, y_pos - 3*mm, f"{depth:.1f}")
+        c.drawString(x + 2*mm, y_pos - 3*mm, f"{depth:.1f}")
         c.line(x, y_pos, x + width, y_pos)
+    
+    # Define subcol widths
+    subcol1_width = width * 0.2  # PROFUND
+    subcol2_width = width * 0.1  # N.A.
+    subcol3_width = width * 0.7  # CLASSIFICAÇÃO
     
     # Draw soil layer descriptions
     c.setFont("Helvetica", 8)
@@ -161,7 +206,7 @@ def draw_soil_layers(c, x, y, width, height, soil_layers, spt_data):
         # Draw description in the middle of the layer
         if description:
             # Wrap text if needed
-            max_width = width * 0.6
+            max_width = subcol3_width * 0.9
             words = description.split()
             lines = []
             current_line = []
@@ -180,21 +225,24 @@ def draw_soil_layers(c, x, y, width, height, soil_layers, spt_data):
             
             # Draw each line
             for j, line in enumerate(lines):
-                c.drawString(x + width/3 + 2*mm, y_mid - 3*mm - j*10, line)
+                c.drawString(x + subcol1_width + subcol2_width + 2*mm, y_mid - 3*mm - j*10, line)
+    
+    # Check for water level
+    water_level_data = next((data for data in spt_data if data.get('has_water_level', False)), None)
+    if water_level_data:
+        water_depth = float(water_level_data.get('depth', 0))
+        y_water = y - water_depth * scale
         
-        # Check for water level
-        for data_point in spt_data:
-            if data_point.get('has_water_level', False):
-                water_depth = float(data_point.get('depth', 0))
-                if start_depth <= water_depth <= end_depth:
-                    # Draw water level line
-                    y_water = y - water_depth * scale
-                    c.setStrokeColorRGB(0, 0, 1)  # Blue
-                    c.setDash(1, 2)  # Dashed line
-                    c.line(x + width/5, y_water, x + width*2/3, y_water)
-                    c.drawString(x + width/5 - 10*mm, y_water - 3*mm, "Água")
-                    c.setStrokeColorRGB(0, 0, 0)  # Back to black
-                    c.setDash(1, 0)  # Solid line
+        # Draw water level indicator in N.A. column
+        c.setFillColorRGB(0, 0, 1)  # Blue
+        c.drawString(x + subcol1_width + 2*mm, y_water - 3*mm, "Água")
+        
+        # Draw water level line
+        c.setStrokeColorRGB(0, 0, 1)  # Blue
+        c.setDash(1, 2)  # Dashed line
+        c.line(x, y_water, x + width, y_water)
+        c.setStrokeColorRGB(0, 0, 0)  # Back to black
+        c.setDash(1, 0)  # Solid line
 
 def draw_depth_scale(c, x, y, width, height, soil_layers, spt_data):
     # Calculate total depth for scaling
@@ -229,7 +277,7 @@ def draw_depth_scale(c, x, y, width, height, soil_layers, spt_data):
 
 def draw_spt_chart_grid(c, x, y, width, height):
     # Calculate grid dimensions
-    grid_width = width * 0.9
+    grid_width = width
     grid_height = height
     
     # Number of vertical lines (0-50 in steps of 5)
@@ -388,7 +436,6 @@ def draw_observations(c, x, y, width, height, form_data, spt_data):
 def draw_footer(c, width, height, form_data):
     # Draw the footer with company info and signatures
     footer_y = 30*mm
-    footer_height = 20*mm
     
     # Draw title at the bottom
     c.setFont("Helvetica-Bold", 14)
