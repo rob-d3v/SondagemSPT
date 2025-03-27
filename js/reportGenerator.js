@@ -153,8 +153,8 @@ export class ReportGenerator {
                 <div class="observations-section">
                     <p>Observação:</p>
                     <ul>
-                        <li>- Limite de sondagem ao S.P.T.</li>
-                        <li>- Profundidade atingida: ${this.getMaxDepth(sptData).toFixed(2)}m</li>
+                        // <li>- Limite de sondagem ao S.P.T.</li>
+                        // <li>- Profundidade atingida: ${this.getMaxDepth(sptData).toFixed(2)}m</li>
                         <li>${this.waterLevelText(sptData)}</li>
                         ${formData.observacoes ? `<li>- ${formData.observacoes}</li>` : ''}
                     </ul>
