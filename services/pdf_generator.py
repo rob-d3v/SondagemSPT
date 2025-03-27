@@ -29,6 +29,12 @@ def generate_spt_report(form_data, soil_layers, spt_data):
         spaceAfter=10
     )
     
+    # Remove limite_sondagem and profundidade_atingida from form_data if present
+    if 'limite_sondagem' in form_data:
+        del form_data['limite_sondagem']
+    if 'profundidade_atingida' in form_data:
+        del form_data['profundidade_atingida']
+    
     # Draw border
     c.rect(10*mm, 10*mm, width-20*mm, height-20*mm, stroke=1, fill=0)
     
@@ -54,14 +60,23 @@ def draw_header(c, width, height, form_data):
     # Draw header box
     c.rect(15*mm, header_y - header_height, width - 30*mm, header_height, stroke=1, fill=0)
     
-    # Draw title
-    c.setFont("Helvetica-Bold", 16)
-    c.drawCentredString(width/2, header_y - 15*mm, "RELATÓRIO DE SONDAGEM SPT")
-    
-    # Draw company logo or name
+    # Draw company logo or name with better positioning
     if form_data.get('company_name'):
         c.setFont("Helvetica-Bold", 12)
-        c.drawString(20*mm, header_y - 10*mm, form_data.get('company_name'))
+        c.drawString(25*mm, header_y - 12*mm, form_data.get('company_name'))
+    
+    # Draw title with better positioning
+    c.setFont("Helvetica-Bold", 16)
+    c.drawCentredString(width/2, header_y - 18*mm, "RELATÓRIO DE SONDAGEM SPT")
+    
+    # Try to load company logo if available
+    try:
+        logo_path = os.path.join(current_app.root_path, 'static', 'img', 'company_logo.png')
+        if os.path.exists(logo_path):
+            c.drawImage(logo_path, 25*mm, header_y - 25*mm, width=30*mm, height=15*mm)
+    except:
+        # If logo loading fails, just continue without it
+        pass
 
 def draw_content(c, width, height, form_data, soil_layers, spt_data):
     # Draw the main content with soil layers and SPT data
@@ -163,9 +178,9 @@ def draw_content(c, width, height, form_data, soil_layers, spt_data):
     # Draw SPT data points and lines
     draw_spt_data(c, x_start + col1_width + col2_width + col3_width, y_content_start_actual, col4_width, content_height - (y_content_start - y_content_start_actual), spt_data)
     
-    # Draw observations
+    # Draw observations - pass soil_layers to calculate max depth
     y_obs = y_content_start - content_height - 5*mm
-    draw_observations(c, x_start, y_obs, content_width, 25*mm, form_data, spt_data)
+    draw_observations(c, x_start, y_obs, content_width, 25*mm, form_data, spt_data, soil_layers)
 
 def draw_soil_layers(c, x, y, width, height, soil_layers, spt_data):
     # Calculate total depth for scaling
@@ -377,7 +392,7 @@ def draw_spt_data(c, x, y, width, height, spt_data):
         c.setStrokeColorRGB(0, 0, 0)
         c.setLineWidth(1)
 
-def draw_observations(c, x, y, width, height, form_data, spt_data):
+def draw_observations(c, x, y, width, height, form_data, spt_data, soil_layers):
     # Draw observations box
     c.rect(x, y - height, width, height, stroke=1, fill=0)
     
@@ -385,13 +400,15 @@ def draw_observations(c, x, y, width, height, form_data, spt_data):
     c.setFont("Helvetica-Bold", 8)
     c.drawString(x + 5*mm, y - 5*mm, "Observação:")
     
-    # Draw observations
-    c.setFont("Helvetica", 8)
+    # Calculate limite de sondagem and profundidade atingida from soil layers
+    max_depth = 0
+    if soil_layers:
+        max_depth = max([float(layer.get('end_depth', 0)) for layer in soil_layers])
     
     # Standard observations
     observations = [
-        f"- Limite de sondagem ao S.P.T.: {form_data.get('limite_sondagem', '')}",
-        f"- Profundidade atingida: {form_data.get('profundidade_atingida', '')}m"
+        f"- Limite de sondagem ao S.P.T.: {max_depth}m",
+        f"- Profundidade atingida: {max_depth}m"
     ]
     
     # Add water level observation if present
@@ -441,13 +458,90 @@ def draw_footer(c, width, height, form_data):
     c.setFont("Helvetica-Bold", 14)
     c.drawCentredString(width/2, footer_y + 10*mm, "PERFIL GEOTÉCNICO")
     
-    # Draw company info
-    c.setFont("Helvetica-Bold", 8)
-    c.drawString(20*mm, footer_y - 5*mm, form_data.get('responsavel', ''))
+    # Draw detailed footer table
+    table_width = width - 30*mm
+    table_height = 25*mm
+    table_x = 15*mm
+    table_y = footer_y - table_height
     
-    # Draw client info
-    c.setFont("Helvetica", 8)
-    c.drawString(20*mm, footer_y - 10*mm, f"CLIENTE: {form_data.get('cliente', '')}")
+    # Draw main table outline
+    c.rect(table_x, table_y, table_width, table_height, stroke=1, fill=0)
     
-    # Draw date
-    c.drawString(width - 50*mm, footer_y - 10*mm, f"DATA: {form_data.get('data', datetime.now().strftime('%d/%m/%Y'))}")
+    # Try to load company logo
+    try:
+        logo_path = os.path.join(current_app.root_path, 'static', 'img', 'company_logo.png')
+        if os.path.exists(logo_path):
+            c.drawImage(logo_path, table_x + 2*mm, table_y + 5*mm, width=25*mm, height=15*mm)
+    except:
+        # If logo loading fails, just continue without it
+        pass
+    
+    # Draw horizontal dividers - create multiple rows
+    num_rows = 5
+    row_height = table_height / num_rows
+    for i in range(1, num_rows):
+        c.line(table_x, table_y + i*row_height, table_x + table_width, table_y + i*row_height)
+    
+    # Draw vertical dividers - create columns
+    col1_width = 30*mm  # For logo or company name
+    col2_width = 80*mm  # For main info
+    col3_width = table_width - col1_width - col2_width  # For remaining info
+    
+    c.line(table_x + col1_width, table_y, table_x + col1_width, table_y + table_height)
+    c.line(table_x + col1_width + col2_width, table_y, table_x + col1_width + col2_width, table_y + table_height)
+    
+    # Draw table headers and values
+    c.setFont("Helvetica-Bold", 7)
+    
+    # Row 1
+    c.drawString(table_x + col1_width + 2*mm, table_y + table_height - row_height + 3*mm, "LAUDO Nº")
+    c.drawString(table_x + col1_width + col2_width + 2*mm, table_y + table_height - row_height + 3*mm, "SPT:")
+    
+    # Row 2
+    c.drawString(table_x + col1_width + 2*mm, table_y + table_height - 2*row_height + 3*mm, "OBRA:")
+    c.drawString(table_x + col1_width + col2_width + 2*mm, table_y + table_height - 2*row_height + 3*mm, "COTA:")
+    
+    # Row 3
+    c.drawString(table_x + col1_width + 2*mm, table_y + table_height - 3*row_height + 3*mm, "LOCAL:")
+    c.drawString(table_x + col1_width + col2_width + 2*mm, table_y + table_height - 3*row_height + 3*mm, "FL Nº")
+    
+    # Row 4
+    c.drawString(table_x + col1_width + 2*mm, table_y + table_height - 4*row_height + 3*mm, "CLIENTE:")
+    
+    # Row 5
+    c.drawString(table_x + col1_width + 2*mm, table_y + table_height - 5*row_height + 3*mm, "DES:")
+    c.drawString(table_x + col1_width + col2_width/2 + 2*mm, table_y + table_height - 5*row_height + 3*mm, "SOND:")
+    c.drawString(table_x + col1_width + col2_width + 2*mm, table_y + table_height - 5*row_height + 3*mm, "DATA:")
+    
+    # Draw values
+    c.setFont("Helvetica", 7)
+    
+    # Row 1
+    c.drawString(table_x + col1_width + 15*mm, table_y + table_height - row_height + 3*mm, form_data.get('laudo_numero', ''))
+    c.drawString(table_x + col1_width + col2_width + 10*mm, table_y + table_height - row_height + 3*mm, form_data.get('spt_numero', ''))
+    
+    # Row 2
+    c.drawString(table_x + col1_width + 15*mm, table_y + table_height - 2*row_height + 3*mm, form_data.get('obra', ''))
+    c.drawString(table_x + col1_width + col2_width + 10*mm, table_y + table_height - 2*row_height + 3*mm, form_data.get('cota', ''))
+    
+    # Row 3
+    c.drawString(table_x + col1_width + 15*mm, table_y + table_height - 3*row_height + 3*mm, form_data.get('local', ''))
+    c.drawString(table_x + col1_width + col2_width + 10*mm, table_y + table_height - 3*row_height + 3*mm, form_data.get('folha_numero', ''))
+    
+    # Row 4
+    c.drawString(table_x + col1_width + 15*mm, table_y + table_height - 4*row_height + 3*mm, form_data.get('cliente', ''))
+    
+    # Row 5
+    c.drawString(table_x + col1_width + 15*mm, table_y + table_height - 5*row_height + 3*mm, form_data.get('responsavel', ''))
+    c.drawString(table_x + col1_width + col2_width/2 + 15*mm, table_y + table_height - 5*row_height + 3*mm, form_data.get('sondador', ''))
+    c.drawString(table_x + col1_width + col2_width + 10*mm, table_y + table_height - 5*row_height + 3*mm, form_data.get('data', datetime.now().strftime('%d/%m/%Y')))
+    
+    # Add company location if available
+    if form_data.get('company_location'):
+        c.setFont("Helvetica", 6)
+        c.drawString(table_x + 2*mm, table_y + 2*mm, form_data.get('company_location', ''))
+    
+    # Add contact info if available
+    if form_data.get('company_contact'):
+        c.setFont("Helvetica", 6)
+        c.drawString(table_x + 2*mm, table_y + 6*mm, form_data.get('company_contact', ''))
