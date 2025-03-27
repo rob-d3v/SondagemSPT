@@ -1,0 +1,203 @@
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Dados do Laudo</h5>
+    </div>
+    <div class="card-body">
+        <form id="spt-form">
+            <div class="accordion" id="formAccordion">
+                <!-- Informações Gerais -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingGeneral">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGeneral" aria-expanded="true" aria-controls="collapseGeneral">
+                            Informações Gerais
+                        </button>
+                    </h2>
+                    <div id="collapseGeneral" class="accordion-collapse collapse show" aria-labelledby="headingGeneral" data-bs-parent="#formAccordion">
+                        <div class="accordion-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="laudo_numero" class="form-label">Laudo Nº</label>
+                                    <input type="text" class="form-control" id="laudo_numero" name="laudo_numero">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="spt_numero" class="form-label">SPT Nº</label>
+                                    <input type="text" class="form-control" id="spt_numero" name="spt_numero">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="obra" class="form-label">Obra</label>
+                                    <input type="text" class="form-control" id="obra" name="obra">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    <label for="local" class="form-label">Local</label>
+                                    <input type="text" class="form-control" id="local" name="local">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="cota" class="form-label">Cota</label>
+                                    <input type="text" class="form-control" id="cota" name="cota">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="cliente" class="form-label">Cliente</label>
+                                    <input type="text" class="form-control" id="cliente" name="cliente">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="designer" class="form-label">Desenhista</label>
+                                    <input type="text" class="form-control" id="designer" name="designer">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="surveyor" class="form-label">Sondador</label>
+                                    <input type="text" class="form-control" id="surveyor" name="surveyor">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="date" class="form-label">Data</label>
+                                    <input type="date" class="form-control" id="date" name="date">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="fl_numero" class="form-label">Folha Nº</label>
+                                    <input type="text" class="form-control" id="fl_numero" name="fl_numero" value="01/01">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="rel_numero" class="form-label">Relatório Nº</label>
+                                    <input type="text" class="form-control" id="rel_numero" name="rel_numero">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="observacoes" class="form-label">Observações</label>
+                                    <textarea class="form-control" id="observacoes" name="observacoes" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Camadas de Solo -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingSoilLayers">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSoilLayers" aria-expanded="false" aria-controls="collapseSoilLayers">
+                            Camadas de Solo
+                        </button>
+                    </h2>
+                    <div id="collapseSoilLayers" class="accordion-collapse collapse" aria-labelledby="headingSoilLayers" data-bs-parent="#formAccordion">
+                        <div class="accordion-body">
+                            <div id="soil-layers-container">
+                                <!-- Soil layers will be added here dynamically -->
+                            </div>
+                            <button type="button" id="add-soil-layer-btn" class="btn btn-success mt-3">
+                                <i class="bi bi-plus-circle"></i> Adicionar Camada
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dados SPT -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingSptData">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSptData" aria-expanded="false" aria-controls="collapseSptData">
+                            Dados SPT
+                        </button>
+                    </h2>
+                    <div id="collapseSptData" class="accordion-collapse collapse" aria-labelledby="headingSptData" data-bs-parent="#formAccordion">
+                        <div class="accordion-body">
+                            <div id="spt-data-container">
+                                <!-- SPT data will be added here dynamically -->
+                            </div>
+                            <button type="button" id="add-spt-data-btn" class="btn btn-success mt-3">
+                                <i class="bi bi-plus-circle"></i> Adicionar Medição
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+                <button type="button" id="preview-btn" class="btn btn-primary">Visualizar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Template for soil layer -->
+<template id="soil-layer-template">
+    <div class="soil-layer-item card mb-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="card-title mb-0">Camada #<span class="layer-number"></span></h6>
+                <button type="button" class="btn btn-sm btn-danger remove-soil-layer-btn">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Profundidade Inicial (m)</label>
+                    <input type="number" step="0.01" class="form-control soil-layer-start-depth" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Profundidade Final (m)</label>
+                    <input type="number" step="0.01" class="form-control soil-layer-end-depth" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Descrição</label>
+                    <textarea class="form-control soil-layer-description" rows="2" required></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Template for SPT data -->
+<template id="spt-data-template">
+    <div class="spt-data-item card mb-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="card-title mb-0">Medição #<span class="data-number"></span></h6>
+                <button type="button" class="btn btn-sm btn-danger remove-spt-data-btn">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Profundidade (m)</label>
+                    <input type="number" step="0.01" class="form-control spt-data-depth" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Cota</label>
+                    <input type="number" step="0.01" class="form-control spt-data-cota">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Amostra</label>
+                    <input type="text" class="form-control spt-data-amostra">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Golpes Inicial</label>
+                    <input type="number" class="form-control spt-data-golpes-inicial" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Golpes Final</label>
+                    <input type="number" class="form-control spt-data-golpes-final" required>
+                </div>
+                <div class="col-md-4 mb-3 d-flex align-items-center">
+                    <div class="form-check">
+                        <input class="form-check-input spt-data-has-water-level" type="checkbox">
+                        <label class="form-check-label">
+                            Nível d'água nesta profundidade
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

@@ -73,8 +73,47 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Event listener for generating PDF
-    document.getElementById('generate-pdf').addEventListener('click', () => {
-        pdfGenerator.generatePdf();
+    document.addEventListener('DOMContentLoaded', function() {
+        // Your existing initialization code
+        
+        // Fix the PDF export button event listener
+        const exportPdfBtn = document.getElementById('export-pdf-btn');
+        if (exportPdfBtn) {
+            exportPdfBtn.addEventListener('click', function() {
+                const reportGenerator = new ReportGenerator(soilLayerManager, sptDataManager, chartManager);
+                const formData = reportGenerator.collectFormData();
+                const soilLayers = soilLayerManager.getLayersData();
+                const sptData = sptDataManager.getSptData();
+                
+                // Generate PDF using html2pdf
+                const pdfContent = reportGenerator.generatePdfHtml(formData, soilLayers, sptData);
+                
+                // Create a hidden div to render the PDF content
+                const pdfContainer = document.createElement('div');
+                pdfContainer.style.position = 'absolute';
+                pdfContainer.style.left = '-9999px';
+                pdfContainer.innerHTML = pdfContent;
+                document.body.appendChild(pdfContainer);
+                
+                // Use html2pdf to generate and download the PDF
+                html2pdf()
+                    .from(pdfContainer)
+                    .set({
+                        margin: [10, 10],
+                        filename: `Laudo_SPT_${formData.reportNumber || 'Relatório'}.pdf`,
+                        image: { type: 'jpeg', quality: 0.98 },
+                        html2canvas: { scale: 2, useCORS: true },
+                        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                    })
+                    .save()
+                    .then(() => {
+                        // Remove the temporary container
+                        document.body.removeChild(pdfContainer);
+                    });
+            });
+        } else {
+            console.error('Export PDF button not found in the document');
+        }
     });
     
     // Add save/load data buttons to the interface

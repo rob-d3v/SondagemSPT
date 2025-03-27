@@ -1,0 +1,109 @@
+<div class="spt-report-preview">
+    <div class="preview-header">
+        <h4>Visualização do Laudo SPT</h4>
+        <p class="text-muted">Esta é uma visualização simplificada. O PDF gerado terá o layout completo.</p>
+    </div>
+    
+    <div class="preview-content">
+        <div class="preview-section">
+            <h5>Informações Gerais</h5>
+            <table class="table table-bordered table-sm">
+                <tr>
+                    <th>Laudo Nº:</th>
+                    <td>{{ form_data.get('laudo_numero', '') }}</td>
+                    <th>SPT Nº:</th>
+                    <td>{{ form_data.get('spt_numero', '') }}</td>
+                </tr>
+                <tr>
+                    <th>Obra:</th>
+                    <td>{{ form_data.get('obra', '') }}</td>
+                    <th>Cota:</th>
+                    <td>{{ form_data.get('cota', '') }}</td>
+                </tr>
+                <tr>
+                    <th>Local:</th>
+                    <td colspan="3">{{ form_data.get('local', '') }}</td>
+                </tr>
+                <tr>
+                    <th>Cliente:</th>
+                    <td colspan="3">{{ form_data.get('cliente', '') }}</td>
+                </tr>
+                <tr>
+                    <th>Desenhista:</th>
+                    <td>{{ form_data.get('designer', '') }}</td>
+                    <th>Sondador:</th>
+                    <td>{{ form_data.get('surveyor', '') }}</td>
+                </tr>
+                <tr>
+                    <th>Data:</th>
+                    <td>{{ form_data.get('date', '') }}</td>
+                    <th>Folha Nº:</th>
+                    <td>{{ form_data.get('fl_numero', '01/01') }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="preview-section">
+            <h5>Camadas de Solo</h5>
+            {% if soil_layers %}
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Profundidade Inicial (m)</th>
+                        <th>Profundidade Final (m)</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for layer in soil_layers %}
+                    <tr>
+                        <td>{{ layer.get('start_depth', 0) }}</td>
+                        <td>{{ layer.get('end_depth', 0) }}</td>
+                        <td>{{ layer.get('description', '') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted">Nenhuma camada de solo cadastrada.</p>
+            {% endif %}
+        </div>
+        
+        <div class="preview-section">
+            <h5>Dados SPT</h5>
+            {% if spt_data %}
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Profundidade (m)</th>
+                        <th>Cota</th>
+                        <th>Amostra</th>
+                        <th>Golpes Inicial</th>
+                        <th>Golpes Final</th>
+                        <th>Nível d'água</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in spt_data %}
+                    <tr>
+                        <td>{{ data.get('depth', 0) }}</td>
+                        <td>{{ data.get('cota', '') }}</td>
+                        <td>{{ data.get('amostra', '') }}</td>
+                        <td>{{ data.get('golpes_inicial', 0) }}</td>
+                        <td>{{ data.get('golpes_final', 0) }}</td>
+                        <td>{% if data.get('has_water_level', False) %}Sim{% else %}Não{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted">Nenhum dado SPT cadastrado.</p>
+            {% endif %}
+        </div>
+        
+        <div class="preview-section">
+            <h5>Observações</h5>
+            <p>{{ form_data.get('observacoes', 'Nenhuma observação cadastrada.') }}</p>
+        </div>
+    </div>
+</div>

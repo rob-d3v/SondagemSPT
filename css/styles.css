@@ -1,0 +1,336 @@
+/* Base styles for the SPT report */
+.spt-report {
+    font-family: Arial, sans-serif;
+    border: 1px solid #000;
+    margin: 20px auto;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Content at the top */
+.report-content {
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px solid #000;
+}
+
+/* Left column - Camadas Detectadas with 3 subcolumns */
+.soil-layers-section {
+    width: 40%;
+    background: white;
+    border-right: 1px solid #000;
+}
+
+.soil-layers-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.soil-layers-table th {
+    border: 1px solid #000;
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+    background-color: #f2f2f2;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.soil-layers-table thead tr:first-child th {
+    background-color: #e0e0e0;
+    font-size: 14px;
+}
+
+.soil-layers-table td {
+    border: 1px solid #000;
+    padding: 5px;
+}
+
+.profund-col {
+    width: 80px;
+}
+
+.na-col {
+    width: 50px;
+}
+
+.class-col {
+    width: auto;
+}
+
+.depth-cell {
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+
+.water-cell {
+    text-align: center;
+}
+
+.water-level {
+    color: blue;
+    font-weight: bold;
+}
+
+.description-cell {
+    vertical-align: top;
+    text-align: left;
+}
+
+.horizontal-line td {
+    height: 1px;
+    padding: 0;
+    border-top: 1px solid #ccc;
+    border-bottom: none;
+}
+
+/* Middle and right columns */
+.spt-data-section {
+    width: 60%;
+    display: flex;
+}
+
+/* Escala das cotas and Amostra revestida */
+.escala-container {
+    width: 30%;
+    border-right: 1px solid #000;
+}
+
+.escala-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Courier New', monospace;
+}
+
+.escala-table th {
+    border: 1px solid #000;
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+    background-color: #f2f2f2;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.escala-table thead tr:first-child th {
+    background-color: #e0e0e0;
+    font-size: 14px;
+}
+
+.escala-table td {
+    border: 1px solid #000;
+    padding: 5px;
+    text-align: center;
+}
+
+/* Vertical text for "AMOSTRA REVESTIDA" */
+.amostra-header {
+    vertical-align: middle;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    padding: 10px 2px !important;
+    height: 150px;
+}
+
+/* Chart section */
+.spt-chart-section {
+    width: 70%;
+    background: white;
+    border-left: 1px solid #000;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-header {
+    border-bottom: 1px solid #000;
+    background-color: #f2f2f2;
+}
+
+.chart-header h4 {
+    margin: 0;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    padding: 5px;
+}
+
+.golpes-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 5px;
+    border-bottom: 1px solid #000;
+    background-color: #e0e0e0;
+}
+
+.golpes-header-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.golpes-labels {
+    display: flex;
+    gap: 50px;
+}
+
+.inicial-label {
+    color: blue;
+    font-weight: bold;
+}
+
+.final-label {
+    color: red;
+    font-weight: bold;
+}
+
+.spt-chart-container {
+    flex: 1;
+    min-height: 400px;
+    background-color: white;
+    position: relative;
+}
+
+/* Observations section */
+.observations-section {
+    padding: 10px;
+    border-bottom: 1px solid #000;
+    font-size: 12px;
+}
+
+.observations-section p {
+    margin: 0 0 5px 0;
+    font-weight: bold;
+}
+
+.observations-section ul {
+    margin: 0;
+    padding-left: 20px;
+    list-style-type: none;
+}
+
+.observations-section li {
+    margin-bottom: 3px;
+}
+
+/* Title below all columns */
+.report-title {
+    text-align: center;
+    border-bottom: 1px solid #000;
+    padding: 10px;
+}
+
+.report-title h3 {
+    margin: 0;
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* Footer section (cabeçalho) */
+.report-footer {
+    display: flex;
+    padding: 10px;
+}
+
+.company-logo {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo-container {
+    border: 2px solid #000;
+    padding: 10px;
+    margin-bottom: 5px;
+    width: 100px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-text {
+    text-align: center;
+    font-weight: bold;
+}
+
+.company-location {
+    text-align: center;
+    font-size: 12px;
+}
+
+.company-location p {
+    margin: 0;
+}
+
+.report-info {
+    width: 70%;
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.info-table td {
+    border: 1px solid #000;
+    padding: 5px;
+}
+
+.info-table td:first-child {
+    font-weight: bold;
+    width: 80px;
+}
+
+/* Error message */
+.error-message {
+    color: red;
+    padding: 20px;
+    border: 1px solid red;
+    background-color: #ffeeee;
+    margin: 20px;
+}
+
+/* Water level line */
+.linha-agua {
+    border-top: 2px dashed blue;
+    margin: 0;
+    width: 100%;
+}
+
+/* Chart styling */
+.linha-vermelha {
+    stroke: red;
+    stroke-width: 2;
+    fill: none;
+}
+
+.linha-azul {
+    stroke: blue;
+    stroke-width: 2;
+    fill: none;
+}
+
+/* Print-specific styles */
+@media print {
+    .spt-report {
+        max-width: 100%;
+        margin: 0;
+        border: none;
+    }
+    
+    .spt-chart-container {
+        height: 300px;
+    }
+    
+    body {
+        margin: 0;
+        padding: 0;
+    }
+}
